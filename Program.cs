@@ -26,9 +26,17 @@ public class Program
         AzureHandler handler = new AzureHandler();
 
         app.UseHttpsRedirection();
+        
+        app.MapGet("/", () => {
+            return "CONNECTION SUCCESSFUL";
+        })
+        .WithName("TestRoot")
+        .WithOpenApi();
+
 
         app.MapPut("/emails/add/", async context =>
         {
+			Console.WriteLine("GOT REQUEST.");
             if (context.Request.ContentType != "application/json")
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -45,7 +53,7 @@ public class Program
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
-            if (email is null || email.email == null)
+            if (email is null || email.email is null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;

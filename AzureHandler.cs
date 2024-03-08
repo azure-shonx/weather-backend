@@ -40,7 +40,7 @@ public class AzureHandler
     {
         var emails = GetEmails();
         bool removed = emails.Remove(email.email);
-        if(removed)
+        if (removed)
             SaveEmails(emails);
         return removed;
     }
@@ -68,10 +68,9 @@ public class AzureHandler
 
     private string GetLocalFilePath()
     {
-        string localPath = "temp";
-        Directory.CreateDirectory(localPath);
         string fileName = Guid.NewGuid().ToString() + "_" + FILE_NAME;
-        return Path.Combine(localPath, fileName);
+        string path = Path.Combine("/app/temp/", fileName);
+        return path;
     }
 
 }
