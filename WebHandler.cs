@@ -48,7 +48,14 @@ public class WebHandler
         {
             Email email = await GetEmailAndSetResponse(context.Request, context.Response);
             if (email is null)
+            {
                 return;
+            }
+            if (email.zipcode == 0)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return;
+            }
             handler.AddEmail(email);
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         })
@@ -95,7 +102,7 @@ public class WebHandler
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
         }
-        if (email is null || email.email is null)
+        if (email is null || String.IsNullOrEmpty(email.email))
         {
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
