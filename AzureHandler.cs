@@ -17,13 +17,13 @@ public class AzureHandler
     public AzureHandler()
     {
         bsc = new BlobServiceClient(
-                new Uri("https://weathertrackerb951.blob.core.windows.net"),
+                new Uri("https://weatherb313.blob.core.windows.net"),
                 new DefaultAzureCredential());
         bcc = bsc.GetBlobContainerClient("emails");
         bc = bcc.GetBlobClient(FILE_NAME);
     }
 
-    public List<string> GetEmails()
+    public List<Email> GetEmails()
     {
         return GetEmails0().Result;
 
@@ -31,22 +31,43 @@ public class AzureHandler
 
     public void AddEmail(Email email)
     {
+        bool updated = false;
         var emails = GetEmails();
-        emails.Add(email.email);
+        foreach(Email e in emails)
+        {
+            if (e.email == email.email)
+            {
+                e.zipcode = email.zipcode;
+                updated = true;
+            }
+
+        }
+        if (!updated)
+            emails.Add(email);
         SaveEmails(emails);
     }
 
     public bool DeleteEmail(Email email)
     {
+        bool removed = false;
         var emails = GetEmails();
-        bool removed = emails.Remove(email.email);
+        Email toRemove = null;
+        foreach(Email e in emails)
+        {
+            if (e.email == email.email)
+            {
+                toRemove = e;
+                break;
+            }
+        }
+        removed = emails.Remove(toRemove);
         if (removed)
             SaveEmails(emails);
         return removed;
     }
 
 
-    private async Task<List<string>> GetEmails0()
+    private async Task<List<Email>> GetEmails0()
     {
         string localFilePath = GetLocalFilePath();
 
@@ -54,10 +75,10 @@ public class AzureHandler
 
         string json = await File.ReadAllTextAsync(localFilePath);
 
-        return JsonConvert.DeserializeObject<List<string>>(json);
+        return JsonConvert.DeserializeObject<List<Email>>(json);
     }
 
-    private async void SaveEmails(List<string> emails)
+    private async void SaveEmails(List<Email> emails)
     {
         string localFilePath = GetLocalFilePath();
 

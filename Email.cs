@@ -10,9 +10,9 @@ public class Email
             this.email = email;
         this.zipcode = zipcode;
     }
-    public string email { get; }
-    
-    public int zipcode { get; }
+    public string email { set; get; }
+
+    public int zipcode { set; get; }
 
     public override string ToString()
     {
