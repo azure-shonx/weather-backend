@@ -49,12 +49,10 @@ public class WebHandler
             Email email = await GetEmailAndSetResponse(context.Request, context.Response);
             if (email is null)
             {
-                Console.WriteLine("email object is null.");
                 return;
             }
             if (email.zipcode <= 0)
             {
-                Console.WriteLine("Provided zipcode is 0 (or less).");
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
@@ -71,7 +69,6 @@ public class WebHandler
                 return;
             handler.DeleteEmail(email);
             context.Response.StatusCode = (int)HttpStatusCode.OK;
-
         })
         .WithName("DeleteEmail")
         .WithOpenApi();
@@ -89,10 +86,8 @@ public class WebHandler
     private async Task<Email> GetEmailAndSetResponse(HttpRequest request, HttpResponse response)
     {
         Email email;
-        if (request.ContentType.Contains("application/json"))
+        if (!request.ContentType.Contains("application/json"))
         {
-            Console.WriteLine("Invalid ContentType. ContentType is \"" + request.ContentType + "\"");
-            Console.WriteLine("No application/json in Header.");
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
         }
@@ -103,14 +98,11 @@ public class WebHandler
         }
         catch (Exception e)
         {
-            Console.WriteLine("Exception decoding Json.");
-            Console.WriteLine(e.ToString());
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
         }
         if (email is null || String.IsNullOrEmpty(email.email))
         {
-            Console.WriteLine("Bad email.");
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
         }
