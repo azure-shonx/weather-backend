@@ -1,6 +1,10 @@
-public class WeatherForecast {
+using Newtonsoft.Json;
 
-    public WeatherForecast(int zipcode, int temperature, string? summary, bool isRainy) {
+public class WeatherForecast
+{
+
+    public WeatherForecast(int zipcode, int temperature, string? summary, bool isRainy)
+    {
         this.zipcode = zipcode;
         this.temperature = temperature;
         this.summary = summary;
@@ -12,4 +16,9 @@ public class WeatherForecast {
     public string? summary { get; }
 
     public bool isRainy { get; }
+
+    public override string ToString()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 }

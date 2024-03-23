@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 public class Email
 
@@ -16,6 +17,6 @@ public class Email
 
     public override string ToString()
     {
-        return email + zipcode;
+        return JsonConvert.SerializeObject(this);
     }
 }
