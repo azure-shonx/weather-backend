@@ -8,7 +8,8 @@ public class WebHandler
 
     private WebApplicationBuilder builder;
     private WebApplication app;
-    private AzureHandler handler;
+    private AzureHandler azureHandler;
+    private WeatherHandler weatherHandler;
     public WebHandler(string[] args)
     {
         buildWebApp(args);
@@ -32,7 +33,8 @@ public class WebHandler
             app.UseSwaggerUI();
         }
 
-        handler = new AzureHandler();
+        azureHandler = new AzureHandler();
+        weatherHandler = new WeatherHandler();
 
         app.UseHttpsRedirection();
 
@@ -41,6 +43,20 @@ public class WebHandler
             return "CONNECTION SUCCESSFUL";
         })
         .WithName("TestRoot")
+        .WithOpenApi();
+
+        app.MapGet("/weather/get/", async context =>
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        })
+        .WithName("InvalidGetWeatherForecast")
+        .WithOpenApi();
+
+        app.MapGet("/weather/get/{zipcode}", (int zipcode) =>
+        {
+            return JsonConvert.SerializeObject(weatherHandler.GetForecast(zipcode));
+        })
+        .WithName("GetWeatherForecast")
         .WithOpenApi();
 
 
@@ -56,7 +72,7 @@ public class WebHandler
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
-            handler.AddEmail(email);
+            azureHandler.AddEmail(email);
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         })
         .WithName("RegisterEmail")
@@ -67,7 +83,7 @@ public class WebHandler
             Email email = await GetEmailAndSetResponse(context.Request, context.Response);
             if (email is null)
                 return;
-            handler.DeleteEmail(email);
+            azureHandler.DeleteEmail(email);
             context.Response.StatusCode = (int)HttpStatusCode.OK;
         })
         .WithName("DeleteEmail")
@@ -75,7 +91,7 @@ public class WebHandler
 
         app.MapGet("/emails/get", () =>
         {
-            return JsonConvert.SerializeObject(handler.GetEmails());
+            return JsonConvert.SerializeObject(azureHandler.GetEmails());
         })
         .WithName("GetEmails")
         .WithOpenApi();
