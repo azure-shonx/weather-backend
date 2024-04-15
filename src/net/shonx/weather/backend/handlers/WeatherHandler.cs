@@ -1,20 +1,15 @@
+namespace net.shonx.weather.backend.handlers;
 public class WeatherHandler
 {
-
-
-    public WeatherHandler()
-    {
-
-    }
+    public WeatherHandler() { }
 
     public WeatherForecast GetForecast(int zipcode)
     {
-        bool isRainy = (Random.Shared.Next() >= (Int32.MaxValue / 2));
+        bool isRainy = Random.Shared.Next() >= (int.MaxValue / 2);
         int temperature = Random.Shared.Next(-20, 55);
         string summary = GetSummary(temperature, isRainy);
         return new WeatherForecast(zipcode, temperature, summary, isRainy);
     }
-
 
     private string GetSummary(int temperature, bool isRainy)
     {

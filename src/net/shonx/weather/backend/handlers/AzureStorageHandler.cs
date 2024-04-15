@@ -1,20 +1,19 @@
+namespace net.shonx.weather.backend.handlers;
+
 using Azure.Identity;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Text;
 
-public class AzureHandler
+public class AzureStorageHandler
 {
-    private BlobServiceClient bsc;
-    private BlobContainerClient bcc;
-
-    private BlobClient bc;
-
+    private readonly BlobServiceClient bsc;
+    private readonly BlobContainerClient bcc;
+    private readonly BlobClient bc;
     private readonly string FILE_NAME = "emails.json";
-    public AzureHandler()
+
+    public AzureStorageHandler()
     {
         bsc = new BlobServiceClient(
                 new Uri("https://weatherb313.blob.core.windows.net"),
@@ -26,21 +25,19 @@ public class AzureHandler
     public List<Email> GetEmails()
     {
         return GetEmails0().Result;
-
     }
 
     public void AddEmail(Email email)
     {
         bool updated = false;
         var emails = GetEmails();
-        foreach(Email e in emails)
+        foreach (Email e in emails)
         {
-            if (e.email == email.email)
+            if (e.Value == email.Value)
             {
-                e.zipcode = email.zipcode;
+                e.Zipcode = email.Zipcode;
                 updated = true;
             }
-
         }
         if (!updated)
             emails.Add(email);
@@ -51,15 +48,17 @@ public class AzureHandler
     {
         bool removed = false;
         var emails = GetEmails();
-        Email toRemove = null;
-        foreach(Email e in emails)
+        Email? toRemove = null;
+        foreach (Email e in emails)
         {
-            if (e.email == email.email)
+            if (e.Value == email.Value)
             {
                 toRemove = e;
                 break;
             }
         }
+        if (toRemove is null)
+            return false;
         removed = emails.Remove(toRemove);
         if (removed)
             SaveEmails(emails);
@@ -75,7 +74,7 @@ public class AzureHandler
 
         string json = await File.ReadAllTextAsync(localFilePath);
 
-        return JsonConvert.DeserializeObject<List<Email>>(json);
+        return JsonConvert.DeserializeObject<List<Email>>(json) ?? [];
     }
 
     private async void SaveEmails(List<Email> emails)
