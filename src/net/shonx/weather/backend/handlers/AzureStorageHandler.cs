@@ -11,7 +11,7 @@ public class AzureStorageHandler
     private readonly BlobServiceClient bsc;
     private readonly BlobContainerClient bcc;
     private readonly BlobClient bc;
-    private readonly string FILE_NAME = "emails.json";
+    private const string INDEX = "emails.json";
 
     public AzureStorageHandler()
     {
@@ -19,7 +19,7 @@ public class AzureStorageHandler
                 new Uri("https://weatherb313.blob.core.windows.net"),
                 new DefaultAzureCredential());
         bcc = bsc.GetBlobContainerClient("emails");
-        bc = bcc.GetBlobClient(FILE_NAME);
+        bc = bcc.GetBlobClient(INDEX);
     }
 
     public List<Email> GetEmails()
@@ -88,7 +88,7 @@ public class AzureStorageHandler
 
     private string GetLocalFilePath()
     {
-        string fileName = Guid.NewGuid().ToString() + "_" + FILE_NAME;
+        string fileName = Guid.NewGuid().ToString() + "_" + INDEX;
         string path = Path.Combine("/app/temp/", fileName);
         return path;
     }

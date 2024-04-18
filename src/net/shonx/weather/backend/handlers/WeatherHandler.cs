@@ -1,8 +1,6 @@
 namespace net.shonx.weather.backend.handlers;
 public class WeatherHandler
 {
-    public WeatherHandler() { }
-
     public WeatherForecast GetForecast(int zipcode)
     {
         bool isRainy = Random.Shared.Next() >= (int.MaxValue / 2);

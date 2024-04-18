@@ -36,16 +36,16 @@ public class WebHandler
 
     private void BuildMappings()
     {
-        app.MapGet("/", RequestProcessor.TestRoot).WithName("TestRoot").WithOpenApi();
+        app.MapGet("/", RequestProcessor.TestRoot).WithName("TestRoot");
 
-        app.MapGet("/weather/get/", RequestProcessor.InvalidGetWeatherForecast).WithName("InvalidGetWeatherForecast").WithOpenApi();
+        app.MapGet("/weather/get/", RequestProcessor.InvalidGetWeatherForecast).WithName("InvalidGetWeatherForecast");
 
-        app.MapGet("/weather/get/{zipcode}", RequestProcessor.GetWeatherForecast).WithName("GetWeatherForecast").WithOpenApi();
+        app.MapGet("/weather/get/{zipcode}", RequestProcessor.GetWeatherForecast).WithName("GetWeatherForecast");
 
-        app.MapPut("/emails/add/", RequestProcessor.RegisterEmail).WithName("RegisterEmail").WithOpenApi();
+        app.MapPut("/emails/add/", RequestProcessor.RegisterEmail).WithName("RegisterEmail");
 
-        app.MapPut("/emails/remove/", RequestProcessor.DeleteEmail).WithName("DeleteEmail").WithOpenApi();
+        app.MapPut("/emails/remove/", RequestProcessor.DeleteEmail).WithName("DeleteEmail");
 
-        app.MapGet("/emails/get", RequestProcessor.GetEmails).WithName("GetEmails").WithOpenApi();
+        app.MapGet("/emails/get", RequestProcessor.GetEmails).WithName("GetEmails");
     }
 }
